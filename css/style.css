@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+.boards {
+    display: flex;
+    justify-content: space-around;
+}
+.grid{
+    border: 1px solid blue;
+    display: grid;
+    grid-template-columns: repeat(10, auto);
+}
+.cell{  
+    height: 30px;
+    width: 30px;
+    background-color: lightblue;
+    border: 1px solid black;
+}
+.computerGrid:hover {
+    border: 1px solid white;
+}
+h4{
+    margin: 5px;
+}
+.scoreSheet{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border: 2px solid grey
+}
+.shipmarker{
+    background-color: red;
+    display: inline-block;
+    width: 10px;
+    height: 5px;
+}
+button {
+    padding: 10px 20px;
+}
+#instructions{
+    border: 5px solid black;
+    margin-top: 100px;
+    margin-bottom: 150px;
+    padding: 10px
+}

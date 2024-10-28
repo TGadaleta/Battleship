@@ -42,13 +42,13 @@ All variables declared or initialized
 
 Functions
 
-    grid setup {unsing nested for loops that creates gridsize by gridsize grid in HTML, giving each cell a unique location coordinate and content of 'water'}
+    gameboard setup {using nested for loops to create a 2D array with content for each cell}
 
-    gameboard setup {using nested for loops to create a 2D array that holds the location and content for each HTML cell that was created}
+    grid setup {using nested for loops that creates gridsize by gridsize grid in HTML, giving each cell a unique location id and content of 'water'}
 
-    ship placement setup {using the appropriate ship array, place the ships by setting the location of each piece of the array to a cell on our grid, will also make sure that the cells are legal for each ship}
+    ship placement setup {using the ship object, starting at a random cell, randomly checking vertical or horizontal, place the ships by grabbing cells equal to the length of the ship, will also make sure that the cells are legal for each ship}
 
-    update grid {reflect what is on the gameboard to the grid in html}
+    update grid {reflect what is on the gameboard to the grid in html by looping over the gameboard and updating the grid content}
 
     update display {updates the display text to show the turn and the instructions to tell the user what to do next}
 
@@ -57,7 +57,7 @@ Functions
         if a ship is not in the gameboard at the cell, represent a miss on the gameboard
         if all the cells for a ship have been hit, sink the ship by crossing out the name on the scoresheet}
 
-    computer turn{computer picks a random cell,
+    computer turn {computer picks a random cell,
         if a ship is in the gameboard at the cell, indicate a hit on the gameboard
         if a ship is not in the gameboard at the cell, indicate a miss on the gameboard
         if all cells for a ship have been hit, sink the ship by crossing out the name on the scoresheet}
@@ -69,18 +69,22 @@ Functions
     initial function {run all setup functions}
 
     gameplay {alternate between player and computer turn until there is a winner}
+
+    Event Handlers
+    button event handler
+    player clicking computer grid event handler
 ```
 ## Timeline
 
 | Date           |Task                              |Notes  |
 |---            |---                               |---    |
 |Tues 10/29     |finish proposal and get approval  |       |
-|Wed 10/30      |create initial state for the game including grid, gameboard and scoresheet |started but requires fine tuning  |
+|Wed 10/30      |create initial state for the game including grid, gameboard and scoresheet html and styles |started but requires fine tuning  |
 |Thur 10/31     |write randomization code for placing ships onto the gameboard  |don't need to be reflected on the grid yet   |
-|Fri 11/1       |reflect ship placement on the player grid   |should not be shown on the computer grid |
+|Fri 11/1       |reflect ship placement on the player grid with styles  |should not be shown on the computer grid with |
 |Sat 11/2       |write player turn logic  |                  |
-|Sun 11/3       |finish player turn logic and start computer turn logic| needs to reflect hits and misses on grid  |
-|Mon 11/4       |write win condition logic and verify a full game can be played| |
-|Tues 11/5      |clean up game code and start stretch goals|    |
+|Sun 11/3       |finish player turn logic, start computer turn logic, and create style rules for different points in turns| needs to reflect hits and misses on grid  |
+|Mon 11/4       |write win condition logic and finalize style code | |
+|Tues 11/5      |verify a full game can be played, clean up game code and start stretch goals|    |
 |Wed 11/6       |continue on stretch goals  | make sure that main branch has a working game    |
 |Thur 11/7      |present final game |   |
