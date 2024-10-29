@@ -47,7 +47,8 @@ button {
     margin-top: 100px;
     margin-bottom: 150px;
     padding: 10px;
-    max-width: 330px;
+    width: 330px;
+    white-space: pre-wrap; /*ChatGPT*/
 }
 .pGrid.ship{
     background-color: darkgray;
