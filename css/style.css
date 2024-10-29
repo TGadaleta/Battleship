@@ -17,7 +17,7 @@ body {
     background-color: lightblue;
     border: 1px solid black;
 }
-.computerGrid:hover {
+.cGrid:hover {
     border: 1px solid white;
 }
 h4{
