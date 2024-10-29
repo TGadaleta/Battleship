@@ -5,6 +5,7 @@ const cGrid = document.querySelector("#cGrid");
 const pScore = document.querySelector("#playerScoresheet");
 const cScore = document.querySelector("#computerScoresheet");
 const gameBtn = document.querySelector("#gameButton");
+const instruct = document.querySelector("#instructions");
 
 //Variables
 const gridSize = 10; //how man cell rows and cols on each board
@@ -18,6 +19,7 @@ const ships = [
   { name: "submarine", length: 3 },
   { name: "patrol-boat", length: 2 },
 ];
+let setUpComplete = false;
 
 //Functions
 const createGameBoard = (gameBoard) => {
@@ -36,7 +38,7 @@ const createGrid = (gridEl) => {
     for (let col = 0; col < gridSize; col++) {
       let cell = document.createElement("div");
       cell.classList.add(gridEl.id, "cell", "water");
-      cell.id = `${gridEl.id}-${row},${col}`; //data attributs for finding location of cell
+      cell.id = `${gridEl.id}-${row} ${col}`; //data attributs for finding location of cell
       gridEl.appendChild(cell);
     }
   }
@@ -49,7 +51,6 @@ const placeShips = (gameBoard) => {
       let orientation = Math.floor(Math.random() * 2); //orientation will either be 0 or 1
       let startRow = Math.floor(Math.random() * 10); //picks 0-9
       let startCol = Math.floor(Math.random() * 10); //picks 0-9
-      console.log(orientation);
       if (orientation === 0) {
         //horizontal
         if (startCol + ship.length < 10) {
@@ -87,11 +88,28 @@ const placeShips = (gameBoard) => {
   });
 };
 
+const updateGrid = (grid, gameBoard) => {
+  grid.childNodes.forEach((cell) => {
+    let row = cell.id.substring(6, 7);
+    let col = cell.id.substring(8);
+    if (gameBoard[row][col]) {
+      cell.classList.add(gameBoard[row][col]);
+      cell.classList.add("ship");
+    }
+  });
+};
+
 function buttonClickHandler(event) {
-  gameState = "setup";
-  message = "Set Up Board";
-  event.target.innerText = message;
-  display.textContent = message;
+  if (!setUpComplete) {
+    placeShips(cGameBoard);
+    placeShips(pGameBoard);
+    updateGrid(pGrid, pGameBoard);
+    updateGrid(cGrid, cGameBoard);
+    setUpComplete = true;
+    instruct.innerHTML =
+      "Click on a cell on the Computer's Board to make a guess.";
+    gameBtn.innerHTML = 'Restart Game'
+  }
 }
 
 function init() {
@@ -100,8 +118,6 @@ function init() {
   createGameBoard(cGameBoard); //creates computer game board
   createGrid(pGrid); //creates player grid
   createGrid(cGrid); //creates computer grid
-  placeShips(cGameBoard);
-  placeShips(pGameBoard);
 }
 
 //Fill out scoresheets
