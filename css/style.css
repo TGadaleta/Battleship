@@ -52,3 +52,12 @@ button {
 .pGrid.ship{
     background-color: darkgray;
 }
+.hit{
+    background-color: red;
+}
+.miss{
+    background-color: lightgray;
+}
+.pGrid.hit{
+    background-color: red;
+}
