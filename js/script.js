@@ -9,7 +9,7 @@ const instruct = document.querySelector("#instructions");
 
 //Variables
 const gridSize = 10; //how man cell rows and cols on each board
-let message = (display.textContent = "Press Start Game");
+display.textContent = "Press Start Game";
 const pGameBoard = []; //starting grid arrays
 const cGameBoard = [];
 let pTotalShips = 5;
@@ -25,6 +25,9 @@ const ships = [
 let setUpComplete = false; //tracks whether setup is complete
 let turn = "p"; //the player goes first
 let gameOver = false;
+
+//TODO create computer turn logic (for randomization)
+//TODO update display properly
 
 //Functions
 const createGameBoard = (gameBoard) => {
@@ -124,22 +127,6 @@ const checkGameOver = () => {
   }
 };
 
-const shipDestroyed = (shipName, hits) => {
-  ships.forEach((ship) => {
-    if (ship.name === shipName && ship.length === hits) {
-      if (turn === "p") {
-        instruct.innerHTML = `You hit and sunk the computer's ${shipName}!`;
-        cTotalShips -= 1;
-      }
-      if (turn === "c") {
-        instruct.innerHTML = `The computer hit and sunk your ${shipName}!`;
-        pTotalShips -= 1;
-      }
-    }
-  });
-  checkGameOver();
-};
-
 const startGame = (event) => {
   placeShips(cGameBoard);
   placeShips(pGameBoard);
@@ -148,6 +135,22 @@ const startGame = (event) => {
   setUpComplete = true; //setup is done once we run these functions
   event.target.innerHTML = "Restart Game";
   instruct.innerHTML = "Click a cell on the computer's grid to make a guess.";
+};
+
+const restartGame = (event) => {
+  pGameBoard.length = 0;
+  cGameBoard.length = 0;
+  pGrid.innerHTML = "";
+  cGrid.innerHTML = "";
+  ships.forEach((ship) => {
+    ship.cHit = 0;
+    ship.pHit = 0;
+  });
+  pTotalShips = 5;
+  cTotalShips = 5;
+  gameOver = false;
+  init();
+  startGame(event);
 };
 
 const guessHandler = (event, gameBoard) => {
@@ -191,21 +194,22 @@ const guessHandler = (event, gameBoard) => {
   }
 };
 
-const restartGame = (event) => {
-  pGameBoard.length = 0;
-  cGameBoard.length = 0;
-  pGrid.innerHTML = "";
-  cGrid.innerHTML = "";
+const shipDestroyed = (shipName, hits) => {
   ships.forEach((ship) => {
-    ship.cHit = 0;
-    ship.pHit = 0;
+    if (ship.name === shipName && ship.length === hits) {
+      if (turn === "p") {
+        instruct.innerHTML = `You hit and sunk the computer's ${shipName}!`;
+        cTotalShips -= 1;
+      }
+      if (turn === "c") {
+        instruct.innerHTML = `The computer hit and sunk your ${shipName}!`;
+        pTotalShips -= 1;
+      }
+    }
   });
-  pTotalShips = 5;
-  cTotalShips = 5;
-  gameOver = false;
-  init();
-  startGame(event);
+  checkGameOver();
 };
+
 function init() {
   //initial state function
   createGameBoard(pGameBoard); //creates player game board
@@ -213,9 +217,6 @@ function init() {
   createGrid(pGrid); //creates player grid
   createGrid(cGrid); //creates computer grid
 }
-
-//Fill out scoresheets
-//allow user to place ships
 
 //Call Functions
 init(); //calls function when page is opened
