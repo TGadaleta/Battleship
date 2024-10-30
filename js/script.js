@@ -43,11 +43,10 @@ const createGameBoard = (gameBoard) => {
 
 const createGrid = (gridEl) => {
   //creates the html grid that the game is played on
-  //Create Grids Function
   for (let row = 0; row < gridSize; row++) {
     for (let col = 0; col < gridSize; col++) {
       let cell = document.createElement("div");
-      cell.classList.add(gridEl.id, "cell", "water"); //
+      cell.classList.add(gridEl.id, "cell", "water"); //needed classes for styling
       cell.id = `${gridEl.id}-${row} ${col}`; //id is used to find location of cell
       gridEl.appendChild(cell);
     }
@@ -116,12 +115,13 @@ const updateGrid = (grid, gameBoard) => {
 
 const checkGameOver = () => {
   if (cTotalShips <= 0) {
-    let message = (instruct.innerHTML += "\n\nCongratulations!!! You Won!!!");
+    //all ships have been destroyed
+    instruct.innerHTML += "\n\nCongratulations!!! You Won!!!";
     display.innerHTML = "Click Restart Game";
     gameOver = true;
   }
   if (pTotalShips <= 0) {
-    let message = (instruct.innerHTML += "\n\nBummer, the Computer Won...");
+    instruct.innerHTML += "\n\nBummer, the Computer Won...";
     display.innerHTML = "Click Restart Game";
     gameOver = true;
   }
@@ -133,21 +133,23 @@ const startGame = (event) => {
   updateGrid(pGrid, pGameBoard);
   updateGrid(cGrid, cGameBoard);
   setUpComplete = true; //setup is done once we run these functions
+  instruct.innerHTML = 'Click on a cell on the Computer\'s Board to make a guess'
   event.target.innerHTML = "Restart Game";
-  instruct.innerHTML = "Click a cell on the computer's grid to make a guess.";
 };
 
 const restartGame = (event) => {
-  pGameBoard.length = 0;
+  pGameBoard.length = 0; //reset all variables
   cGameBoard.length = 0;
   pGrid.innerHTML = "";
   cGrid.innerHTML = "";
   ships.forEach((ship) => {
+    //reset hit count for each ship
     ship.cHit = 0;
     ship.pHit = 0;
   });
   pTotalShips = 5;
   cTotalShips = 5;
+  instruct.innerHTML =
   gameOver = false;
   init();
   startGame(event);
@@ -180,7 +182,7 @@ const guessHandler = (event, gameBoard) => {
           if (turn === "c") {
             //if it is the computer's turn
             ship.cHit += 1; //increase the number of hits for this ship for the computer
-            instruct.innerHTML = `The computer hit your ${gameBoard[row][col]}.`;
+            instruct.innerHTML += `\n\nThe computer hit your ${gameBoard[row][col]}.`;
             shipDestroyed(ship.name, ship.cHit); //see if the ship is destroyed
           }
         }
@@ -188,10 +190,11 @@ const guessHandler = (event, gameBoard) => {
     } else {
       event.target.classList.add("miss");
       if (turn === "p") instruct.innerHTML = `You missed.`;
-      if (turn === "c") instruct.innerHTML = `The computer missed.`;
+      if (turn === "c") instruct.innerHTML += `\n\nThe computer missed.`;
     }
     turn = turn === "p" ? "c" : "p";
   }
+  cGuesses();
 };
 
 const shipDestroyed = (shipName, hits) => {
@@ -202,7 +205,7 @@ const shipDestroyed = (shipName, hits) => {
         cTotalShips -= 1;
       }
       if (turn === "c") {
-        instruct.innerHTML = `The computer hit and sunk your ${shipName}!`;
+        instruct.innerHTML += `\n\nThe computer hit and sunk your ${shipName}!`;
         pTotalShips -= 1;
       }
     }
@@ -210,6 +213,23 @@ const shipDestroyed = (shipName, hits) => {
   checkGameOver();
 };
 
+const cGuesses = () => {
+  if (turn === "c") {
+    let randomIndex = Math.floor(Math.random() * 100);
+    let selectedCell = pGrid.childNodes[randomIndex];
+    if (
+      !(
+        selectedCell.classList.contains("miss") ||
+        selectedCell.classList.contains("hit")
+      )
+    ) {
+      console.log("Computer is Guessing");
+      selectedCell.click();
+      turn = turn === "c" ? "c" : "p";
+    }
+    else {cGuesses()}
+  }
+};
 function init() {
   //initial state function
   createGameBoard(pGameBoard); //creates player game board
@@ -222,8 +242,8 @@ function init() {
 init(); //calls function when page is opened
 
 //Event Listeners
-cGrid.addEventListener("click", (event) => guessHandler(event, cGameBoard));
-pGrid.addEventListener("click", (event) => guessHandler(event, pGameBoard));
+cGrid.addEventListener("click", (event) => guessHandler(event, cGameBoard)); //Chat-GPT
+pGrid.addEventListener("click", (event) => guessHandler(event, pGameBoard)); //Chat-GPT
 gameBtn.addEventListener("click", (event) => {
   //ChatGPT
   if (!setUpComplete) startGame(event);
