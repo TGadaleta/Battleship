@@ -36,7 +36,12 @@ h4{
     display: inline-block;
     width: 10px;
     height: 5px;
+    border: 1px dashed black;
 }
+.shipmarker.hit{
+    background-color: white;
+}
+
 button {
     padding: 10px 20px;
     width: 130px;

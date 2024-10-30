@@ -2,10 +2,9 @@
 const display = document.querySelector(".display");
 const pGrid = document.querySelector("#pGrid");
 const cGrid = document.querySelector("#cGrid");
-const pScore = document.querySelector("#playerScoresheet");
-const cScore = document.querySelector("#computerScoresheet");
 const gameBtn = document.querySelector("#gameButton");
 const instruct = document.querySelector("#instructions");
+const cCarrier = document.querySelectorAll(".cCarrier");
 
 //Variables
 const gridSize = 10; //how man cell rows and cols on each board
@@ -16,20 +15,28 @@ let pTotalShips = 5;
 let cTotalShips = 5;
 const ships = [
   //ships array with an object for each ship
-  { name: "carrier", length: 5, cHit: 0, pHit: 0 },
-  { name: "battleship", length: 4, cHit: 0, pHit: 0 },
-  { name: "destroyer", length: 3, cHit: 0, pHit: 0 },
-  { name: "submarine", length: 3, cHit: 0, pHit: 0 },
-  { name: "patrol-boat", length: 2, cHit: 0, pHit: 0 },
+  { name: "Carrier", length: 5, cHit: 0, pHit: 0 },
+  { name: "Battleship", length: 4, cHit: 0, pHit: 0 },
+  { name: "Destroyer", length: 3, cHit: 0, pHit: 0 },
+  { name: "Submarine", length: 3, cHit: 0, pHit: 0 },
+  { name: "Patrol-boat", length: 2, cHit: 0, pHit: 0 },
 ];
 let setUpComplete = false; //tracks whether setup is complete
 let turn = "p"; //the player goes first
 let gameOver = false;
 
-//TODO create computer turn logic (for randomization)
-//TODO update display properly
-
 //Functions
+const scoreSheetUpdate = (shipName, numHits) => {
+  if (turn === "p") { //if it's the players turn
+    let shipMarkers = document.querySelectorAll(`.c${shipName}.shipmarker`); //gets all the shipmarkers for the ship that was hit
+    shipMarkers[shipMarkers.length - numHits].classList.add("hit"); //takes the last shipmarker w/out the class hit and adds the class
+  }
+  if (turn === "c") { //if it's the computers turn
+    let shipMarkers = document.querySelectorAll(`.p${shipName}.shipmarker`); //same as above
+    shipMarkers[shipMarkers.length - numHits].classList.add("hit");
+  }
+};
+
 const createGameBoard = (gameBoard) => {
   //creates the 2D array that is used to control gameplay
   for (let row = 0; row < gridSize; row++) {
@@ -100,7 +107,7 @@ const placeShips = (gameBoard) => {
   });
 };
 
-const updateGrid = (grid, gameBoard) => {
+const loadGrid = (grid, gameBoard) => {
   grid.childNodes.forEach((cell) => {
     //checks each cell on the grid in order
     let row = cell.id.substring(6, 7); //collects the row from the cell id
@@ -130,10 +137,11 @@ const checkGameOver = () => {
 const startGame = (event) => {
   placeShips(cGameBoard);
   placeShips(pGameBoard);
-  updateGrid(pGrid, pGameBoard);
-  updateGrid(cGrid, cGameBoard);
+  loadGrid(pGrid, pGameBoard);
+  loadGrid(cGrid, cGameBoard);
   setUpComplete = true; //setup is done once we run these functions
-  instruct.innerHTML = 'Click on a cell on the Computer\'s Board to make a guess'
+  instruct.innerHTML =
+    "Click on a cell on the Computer's Board to make a guess.";
   event.target.innerHTML = "Restart Game";
 };
 
@@ -142,6 +150,8 @@ const restartGame = (event) => {
   cGameBoard.length = 0;
   pGrid.innerHTML = "";
   cGrid.innerHTML = "";
+  let shipMarkers = document.querySelectorAll(".shipmarker");
+  shipMarkers.forEach((marker) => marker.classList.remove("hit"));
   ships.forEach((ship) => {
     //reset hit count for each ship
     ship.cHit = 0;
@@ -149,7 +159,6 @@ const restartGame = (event) => {
   });
   pTotalShips = 5;
   cTotalShips = 5;
-  instruct.innerHTML =
   gameOver = false;
   init();
   startGame(event);
@@ -177,12 +186,14 @@ const guessHandler = (event, gameBoard) => {
             //if it is the player's turn
             ship.pHit += 1; //increase the number of hits for this ship for the player
             instruct.innerHTML = `You hit the computer's ${gameBoard[row][col]}.`;
+            scoreSheetUpdate(ship.name, ship.pHit);
             shipDestroyed(ship.name, ship.pHit); //see if the ship is destroyed
           }
           if (turn === "c") {
             //if it is the computer's turn
             ship.cHit += 1; //increase the number of hits for this ship for the computer
             instruct.innerHTML += `\n\nThe computer hit your ${gameBoard[row][col]}.`;
+            scoreSheetUpdate(ship.name, ship.cHit);
             shipDestroyed(ship.name, ship.cHit); //see if the ship is destroyed
           }
         }
@@ -215,21 +226,23 @@ const shipDestroyed = (shipName, hits) => {
 
 const cGuesses = () => {
   if (turn === "c") {
-    let randomIndex = Math.floor(Math.random() * 100);
-    let selectedCell = pGrid.childNodes[randomIndex];
+    //makes sure it's the computers turn
+    let randomIndex = Math.floor(Math.random() * 100); //picks a random number between 0-99
+    let selectedCell = pGrid.childNodes[randomIndex]; //pick a cell using the random Index
     if (
       !(
-        selectedCell.classList.contains("miss") ||
+        selectedCell.classList.contains("miss") || //checks to see if the cell has been clicked before
         selectedCell.classList.contains("hit")
       )
     ) {
-      console.log("Computer is Guessing");
-      selectedCell.click();
-      turn = turn === "c" ? "c" : "p";
-    }
-    else {cGuesses()}
+      selectedCell.click(); //Chat-GPT //clicks the selected cell
+      turn = turn === "c" ? "c" : "p"; //changes the turn to the player
+    } else {
+      cGuesses();
+    } //if a cell isn't clicked, because it was clicked already, run the function again
   }
 };
+
 function init() {
   //initial state function
   createGameBoard(pGameBoard); //creates player game board
