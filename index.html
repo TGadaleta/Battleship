@@ -1,89 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tony's Battleship Project</title>
     <script src="./js/script.js" defer></script>
-    <link href="./css/style.css" rel="stylesheet">
-</head>
-<body>
-    <body>
-        <header class="header">
-            <h1>Battleship!</h1>
-            <h2 class="display"></h2>
-            <button id="gameButton">Start Game</button>
-        </header>
-        <main class="boards">
-            <section id="playerBoard" class="board">
-                <h3>Your Board</h3>
-                <div id="pGrid" class="grid"></div>
-                <h4>Your Ships</h4>
-                <div id="playerScoresheet" class="scoreSheet"> <!--not sure if IDs are needed but putting in now rather than need them later-->
-                    <div id="pCarrier" class="ship carrier">carrier&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span id="pCarrier-1" class="pCarrier shipmarker"></span>
-                        <span id="pCarrier-2" class="pCarrier shipmarker"></span>
-                        <span id="pCarrier-3" class="pCarrier shipmarker"></span>
-                        <span id="pCarrier-4" class="pCarrier shipmarker"></span>
-                        <span id="pCarrier-5" class="pCarrier shipmarker"></span>
-                        </div>
-                    <div id="pBattleship" class="ship battleship">battleship&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span id="pBattleship-1" class="pBattleship shipmarker"></span>
-                        <span id="pBattleship-2" class="pBattleship shipmarker"></span>
-                        <span id="pBattleship-3" class="pBattleship shipmarker"></span>
-                        <span id="pBattleship-4" class="pBattleship shipmarker"></span>
-                    </div>
-                    <div id="pDestroyer" class="ship destroyer">destroyer&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span id="pDestroyer-1" class="pDestroyer shipmarker"></span>
-                        <span id="pDestroyer-2" class="pDestroyer shipmarker"></span>
-                        <span id="pDestroyer-3" class="pDestroyer shipmarker"></span>
-                    </div>
-                    <div id="pSubmarine" class="ship submarine">submarine&nbsp;&nbsp;
-                        <span id="pSubmarine-1" class="pSubmarine shipmarker"></span>
-                        <span id="pSubmarine-2" class="pSubmarine shipmarker"></span>
-                        <span id="pSubmarine-3" class="pSubmarine shipmarker"></span>
-                    </div>
-                    <div id="pPatrolboat" class="ship patrolboat">patrol boat&nbsp;&nbsp;
-                        <span id="pPatrol-boat-1" class="pPatrol-boat shipmarker"></span>
-                        <span id="pPatrol-boat-2" class="pPatrol-boat shipmarker"></span>
-                    </div>
-                </div>
-            </section>
-            <section id="instructions">Click the Start Game button to place your ships.</section>
-            <section id="computerBoard" class="board">
-                <h3>Computer's Board</h3>
-                <div id="cGrid" class="grid"></div>
-                <h4>Computer's Ships</h4>
-                <div id="computerScoresheet" class="scoreSheet">
-                    <div id="cCarrier" class="ship carrier">carrier&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span id="ccarrier-1" class="cCarrier shipmarker"></span>
-                        <span id="cCarrier-2" class="cCarrier shipmarker"></span>
-                        <span id="cCarrier-3" class="cCarrier shipmarker"></span>
-                        <span id="cCarrier-4" class="cCarrier shipmarker"></span>
-                        <span id="cCarrier-5" class="cCarrier shipmarker"></span>
-                    </div>
-                    <div id="cBattleship" class="ship battleship">battleship&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span id="cBattleship-1" class="cBattleship shipmarker"></span>
-                        <span id="cBattleship-2" class="cBattleship shipmarker"></span>
-                        <span id="cBattleship-3" class="cBattleship shipmarker"></span>
-                        <span id="cBattleship-4" class="cBattleship shipmarker"></span>
-                    </div>
-                    <div id="cDestroyer" class="ship destroyer">destroyer&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span id="cDestroyer-1" class="cDestroyer shipmarker"></span>
-                        <span id="cDestroyer-2" class="cDestroyer shipmarker"></span>
-                        <span id="cDestroyer-3" class="cDestroyer shipmarker"></span>
-                    </div>
-                    <div id="cSubmarine" class="ship submarine">submarine&nbsp;&nbsp;
-                        <span id="cSubmarine-1" class="cSubmarine shipmarker"></span>
-                        <span id="cSubmarine-2" class="cSubmarine shipmarker"></span>
-                        <span id="cSubmarine-3" class="cSubmarine shipmarker"></span>
-                    </div>
-                    <div id="cPatrolboat" class="ship patrolboat">patrol boat&nbsp;&nbsp;
-                        <span id="cPatrol-boat-1" class="cPatrol-boat shipmarker"></span>
-                        <span id="cPatrol-boat-2" class="cPatrol-boat shipmarker"></span>
-                    </div>
-                </div>
-            </section>
-        </main> 
-</body>
+    <link href="./css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="header">
+        <img onclick="location.href='https://thenounproject.com/browse/icons/term/battleship/'" src="./assets/battleship-img.png" alt="BATTLESHIP IMG" />
+      <div id="centerConsole">
+        <h1>Battleship!!!</h1>
+        <h2 class="display"></h2>
+        <button id="gameButton">Start Game</button>
+      </div>
+      <img onclick="location.href='https://thenounproject.com/browse/icons/term/battleship/'" src="./assets/battleship-img.png" alt="BATTLESHIP IMG" />
+    </header>
+    <main class="boards">
+      <section id="playerBoard" class="board">
+        <h3>Your Board</h3>
+        <div id="pGrid" class="grid"></div>
+        <h4>Your Ships</h4>
+        <div id="playerScoresheet" class="scoreSheet">
+          <div id="pCarrier" class="ship carrier">
+            CARRIER
+            <span id="pCarrier-1" class="pCarrier shipmarker"></span>
+            <span id="pCarrier-2" class="pCarrier shipmarker"></span>
+            <span id="pCarrier-3" class="pCarrier shipmarker"></span>
+            <span id="pCarrier-4" class="pCarrier shipmarker"></span>
+            <span id="pCarrier-5" class="pCarrier shipmarker"></span>
+          </div>
+          <div id="pBattleship" class="ship battleship">
+            BATTLESHIP
+            <span id="pBattleship-1" class="pBattleship shipmarker"></span>
+            <span id="pBattleship-2" class="pBattleship shipmarker"></span>
+            <span id="pBattleship-3" class="pBattleship shipmarker"></span>
+            <span id="pBattleship-4" class="pBattleship shipmarker"></span>
+          </div>
+          <div id="pDestroyer" class="ship destroyer">
+            DESTROYER
+            <span id="pDestroyer-1" class="pDestroyer shipmarker"></span>
+            <span id="pDestroyer-2" class="pDestroyer shipmarker"></span>
+            <span id="pDestroyer-3" class="pDestroyer shipmarker"></span>
+          </div>
+          <div id="pSubmarine" class="ship submarine">
+            SUBMARINE
+            <span id="pSubmarine-1" class="pSubmarine shipmarker"></span>
+            <span id="pSubmarine-2" class="pSubmarine shipmarker"></span>
+            <span id="pSubmarine-3" class="pSubmarine shipmarker"></span>
+          </div>
+          <div id="pPatrolboat" class="ship patrolboat">
+            PATROL BOAT
+            <span id="pPatrol-boat-1" class="pPatrol-boat shipmarker"></span>
+            <span id="pPatrol-boat-2" class="pPatrol-boat shipmarker"></span>
+          </div>
+        </div>
+      </section>
+      <section id="instructions">
+        Click the Start Game button to place your ships.
+      </section>
+      <section id="computerBoard" class="board">
+        <h3>Computer's Board</h3>
+        <div id="cGrid" class="grid"></div>
+        <h4>Computer's Ships</h4>
+        <div id="computerScoresheet" class="scoreSheet">
+          <div id="cCarrier" class="ship carrier">
+            CARRIER
+            <span id="ccarrier-1" class="cCarrier shipmarker"></span>
+            <span id="cCarrier-2" class="cCarrier shipmarker"></span>
+            <span id="cCarrier-3" class="cCarrier shipmarker"></span>
+            <span id="cCarrier-4" class="cCarrier shipmarker"></span>
+            <span id="cCarrier-5" class="cCarrier shipmarker"></span>
+          </div>
+          <div id="cBattleship" class="ship battleship">
+            BATTLESHIP
+            <span id="cBattleship-1" class="cBattleship shipmarker"></span>
+            <span id="cBattleship-2" class="cBattleship shipmarker"></span>
+            <span id="cBattleship-3" class="cBattleship shipmarker"></span>
+            <span id="cBattleship-4" class="cBattleship shipmarker"></span>
+          </div>
+          <div id="cDestroyer" class="ship destroyer">
+            DESTROYER
+            <span id="cDestroyer-1" class="cDestroyer shipmarker"></span>
+            <span id="cDestroyer-2" class="cDestroyer shipmarker"></span>
+            <span id="cDestroyer-3" class="cDestroyer shipmarker"></span>
+          </div>
+          <div id="cSubmarine" class="ship submarine">
+            SUBMARINE
+            <span id="cSubmarine-1" class="cSubmarine shipmarker"></span>
+            <span id="cSubmarine-2" class="cSubmarine shipmarker"></span>
+            <span id="cSubmarine-3" class="cSubmarine shipmarker"></span>
+          </div>
+          <div id="cPatrolboat" class="ship patrolboat">
+            PATROL BOAT
+            <span id="cPatrol-boat-1" class="cPatrol-boat shipmarker"></span>
+            <span id="cPatrol-boat-2" class="cPatrol-boat shipmarker"></span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
 </html>

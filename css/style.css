@@ -1,10 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 body {
-    font-family: Arial, sans-serif;
+    font-family: vt323, sans-serif;
     text-align: center;
+    font-size: 115%;
+}
+header{
+    display: flex;
+    justify-content: space-evenly;
+    position: relative;
+}
+img {
+    width: 13%;
+    height: 13%;
+    padding-top: 20px;
+}
+img:hover{
+    cursor: pointer;
+}
+h3{
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 .boards {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 .grid{
     border: 1px solid blue;
@@ -49,11 +68,12 @@ button {
 #instructions{
     border: 5px solid black;
     font-size: larger;
-    margin-top: 100px;
-    margin-bottom: 150px;
+    margin-top: 120px;
+    margin-bottom: 200px;
     padding: 10px;
     width: 330px;
-    white-space: pre-wrap; /*ChatGPT*/
+    display: flex;
+    justify-content: center;
 }
 .pGrid.ship{
     background-color: darkgray;

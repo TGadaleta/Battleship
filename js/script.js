@@ -27,11 +27,13 @@ let gameOver = false;
 
 //Functions
 const scoreSheetUpdate = (shipName, numHits) => {
-  if (turn === "p") { //if it's the players turn
+  if (turn === "p") {
+    //if it's the players turn
     let shipMarkers = document.querySelectorAll(`.c${shipName}.shipmarker`); //gets all the shipmarkers for the ship that was hit
     shipMarkers[shipMarkers.length - numHits].classList.add("hit"); //takes the last shipmarker w/out the class hit and adds the class
   }
-  if (turn === "c") { //if it's the computers turn
+  if (turn === "c") {
+    //if it's the computers turn
     let shipMarkers = document.querySelectorAll(`.p${shipName}.shipmarker`); //same as above
     shipMarkers[shipMarkers.length - numHits].classList.add("hit");
   }
@@ -124,12 +126,12 @@ const checkGameOver = () => {
   if (cTotalShips <= 0) {
     //all ships have been destroyed
     instruct.innerHTML += "\n\nCongratulations!!! You Won!!!";
-    display.innerHTML = "Click Restart Game";
+    display.innerHTML = "Click Restart Game to Play Again";
     gameOver = true;
   }
   if (pTotalShips <= 0) {
     instruct.innerHTML += "\n\nBummer, the Computer Won...";
-    display.innerHTML = "Click Restart Game";
+    display.innerHTML = "Click Restart Game to Play Again";
     gameOver = true;
   }
 };
@@ -140,6 +142,7 @@ const startGame = (event) => {
   loadGrid(pGrid, pGameBoard);
   loadGrid(cGrid, cGameBoard);
   setUpComplete = true; //setup is done once we run these functions
+  display.innerHTML = 'Click Restart Game to Restart the Game'
   instruct.innerHTML =
     "Click on a cell on the Computer's Board to make a guess.";
   event.target.innerHTML = "Restart Game";
@@ -185,14 +188,14 @@ const guessHandler = (event, gameBoard) => {
           if (turn === "p") {
             //if it is the player's turn
             ship.pHit += 1; //increase the number of hits for this ship for the player
-            instruct.innerHTML = `You hit the computer's ${gameBoard[row][col]}.`;
+            instruct.innerHTML = `You hit the computer's ${gameBoard[row][col]}!`;
             scoreSheetUpdate(ship.name, ship.pHit);
             shipDestroyed(ship.name, ship.pHit); //see if the ship is destroyed
           }
           if (turn === "c") {
             //if it is the computer's turn
             ship.cHit += 1; //increase the number of hits for this ship for the computer
-            instruct.innerHTML += `\n\nThe computer hit your ${gameBoard[row][col]}.`;
+            instruct.innerHTML += `\n\nThe computer hit your ${gameBoard[row][col]}!`;
             scoreSheetUpdate(ship.name, ship.cHit);
             shipDestroyed(ship.name, ship.cHit); //see if the ship is destroyed
           }
@@ -200,23 +203,29 @@ const guessHandler = (event, gameBoard) => {
       });
     } else {
       event.target.classList.add("miss");
-      if (turn === "p") instruct.innerHTML = `You missed.`;
-      if (turn === "c") instruct.innerHTML += `\n\nThe computer missed.`;
+      if (turn === "p") {
+        cGameBoard[row][col] = 'miss';
+        instruct.innerHTML = `You missed.`;
+      }
+      if (turn === "c") {
+        pGameBoard[row][col] = 'miss';
+        instruct.innerHTML += `\n\nThe computer missed.`;
+      }
     }
     turn = turn === "p" ? "c" : "p";
   }
-  cGuesses();
+  cRandomGuesses();
 };
 
 const shipDestroyed = (shipName, hits) => {
   ships.forEach((ship) => {
     if (ship.name === shipName && ship.length === hits) {
       if (turn === "p") {
-        instruct.innerHTML = `You hit and sunk the computer's ${shipName}!`;
+        instruct.innerHTML += `\n\nYou sunk the computer's ${shipName}!`;
         cTotalShips -= 1;
       }
       if (turn === "c") {
-        instruct.innerHTML += `\n\nThe computer hit and sunk your ${shipName}!`;
+        instruct.innerHTML += `\n\nThe computer sunk your ${shipName}!`;
         pTotalShips -= 1;
       }
     }
@@ -224,7 +233,7 @@ const shipDestroyed = (shipName, hits) => {
   checkGameOver();
 };
 
-const cGuesses = () => {
+const cRandomGuesses = () => {
   if (turn === "c") {
     //makes sure it's the computers turn
     let randomIndex = Math.floor(Math.random() * 100); //picks a random number between 0-99
@@ -238,7 +247,7 @@ const cGuesses = () => {
       selectedCell.click(); //Chat-GPT //clicks the selected cell
       turn = turn === "c" ? "c" : "p"; //changes the turn to the player
     } else {
-      cGuesses();
+      cRandomGuesses();
     } //if a cell isn't clicked, because it was clicked already, run the function again
   }
 };
