@@ -74,6 +74,7 @@ button {
     width: 330px;
     display: flex;
     justify-content: center;
+    white-space: break-spaces;
 }
 .pGrid.ship{
     background-color: darkgray;
