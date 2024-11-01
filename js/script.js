@@ -24,7 +24,7 @@ const ships = [
 let setUpComplete = false; //tracks whether setup is complete
 let turn = "p"; //the player goes first
 let gameOver = false;
-
+let cLastHit = null;
 //Functions
 const scoreSheetUpdate = (shipName, numHits) => {
   if (turn === "p") {
@@ -167,58 +167,96 @@ const restartGame = (event) => {
   startGame(event);
 };
 
-const guessHandler = (event, gameBoard) => {
-  let cell = event.target;
-  let row = Number(cell.id.substring(6, 7)); //collects the row from the cell id
-  let col = Number(cell.id.substring(8)); //collects the col from the cell id
-  if (
-    setUpComplete &&
-    !cell.classList.contains("hit") &&
-    !cell.classList.contains("miss") &&
-    !gameOver
-  ) {
-    //checks if setup is done and the cell has not been clicked before and the game over conditions have not been met
-    if (cell.classList.contains("ship")) {
-      //checks if the classlist contains ship
-      cell.classList.add("hit"); //adds to classlist
-      cell.classList.remove('water');
-      ships.forEach((ship) => {
-        //checks each ship on the ships array
-        if (ship.name === gameBoard[row][col]) {
-          //find the object (ship) with the same value as the gameBoard array
-          if (turn === "p") {
-            //if it is the player's turn
-            ship.pHit += 1; //increase the number of hits for this ship for the player
-            instruct.innerHTML = `You hit the computer's ${gameBoard[row][col]}!`;
-            gameBoard[row][col] = 'hit'
-            scoreSheetUpdate(ship.name, ship.pHit); //update the scoresheet
-            shipDestroyed(ship.name, ship.pHit); //see if the ship is destroyed
-          }
-          if (turn === "c") {
-            //if it is the computer's turn
-            ship.cHit += 1; //increase the number of hits for this ship for the computer
-            instruct.innerHTML += `\n\nThe computer hit your ${gameBoard[row][col]}!`;
-            gameBoard[row][col] = 'hit'
-            scoreSheetUpdate(ship.name, ship.cHit); //update the scoresheet
-            shipDestroyed(ship.name, ship.cHit); //see if the ship is destroyed
-          }
-        }
-      });
-    } else {
-      event.target.classList.add("miss"); //adds a miss to the grid and to the respectife players game board
-      if (turn === "p") {
-        cGameBoard[row][col] = 'miss';
-        instruct.innerHTML = `You missed.`;
-      }
-      if (turn === "c") {
-        pGameBoard[row][col] = 'miss';
-        instruct.innerHTML += `\n\nThe computer missed.`;
-      }
+// const guessHandler = (event, gameBoard) => {
+//   let cell = event.target;
+//   let row = Number(cell.id.substring(6, 7)); //collects the row from the cell id
+//   let col = Number(cell.id.substring(8)); //collects the col from the cell id
+//   if (
+//     setUpComplete &&
+//     !cell.classList.contains("hit") &&
+//     !cell.classList.contains("miss") &&
+//     !gameOver
+//   ) {
+//     //checks if setup is done and the cell has not been clicked before and the game over conditions have not been met
+//     if (cell.classList.contains("ship")) {
+//       //checks if the classlist contains ship
+//       cell.classList.add("hit"); //adds to classlist
+//       cell.classList.remove('water');
+//       ships.forEach((ship) => {
+//         //checks each ship on the ships array
+//         if (ship.name === gameBoard[row][col]) {
+//           //find the object (ship) with the same value as the gameBoard array
+//           if (turn === "p") {
+//             //if it is the player's turn
+//             ship.pHit += 1; //increase the number of hits for this ship for the player
+//             instruct.innerHTML = `You hit the computer's ${gameBoard[row][col]}!`;
+//             gameBoard[row][col] = 'hit'
+//             scoreSheetUpdate(ship.name, ship.pHit); //update the scoresheet
+//             shipDestroyed(ship.name, ship.pHit); //see if the ship is destroyed
+//           }
+//           if (turn === "c") {
+//             //if it is the computer's turn
+//             ship.cHit += 1; //increase the number of hits for this ship for the computer
+//             instruct.innerHTML += `\n\nThe computer hit your ${gameBoard[row][col]}!`;
+//             gameBoard[row][col] = 'hit'
+//             scoreSheetUpdate(ship.name, ship.cHit); //update the scoresheet
+//             shipDestroyed(ship.name, ship.cHit); //see if the ship is destroyed
+//           }
+//         }
+//       });
+//     } else {
+//       event.target.classList.add("miss"); //adds a miss to the grid and to the respectife players game board
+//       if (turn === "p") {
+//         cGameBoard[row][col] = 'miss';
+//         instruct.innerHTML = `You missed.`;
+//       }
+//       if (turn === "c") {
+//         pGameBoard[row][col] = 'miss';
+//         instruct.innerHTML += `\n\nThe computer missed.`;
+//       }
+//     }
+//     turn = turn === "p" ? "c" : "p"; //toggles the turn from player to computer and vice versa
+//   }
+//   cRandomGuesses();
+// };
+
+const pGuessHandler = (event) => {
+  let cell = event.target; //grabs the cell that was clicked
+  let row = Number(cell.id.substring(6,7)) //using the cells id, getting the row value
+  let col = Number(cell.id.substring(8)) //using the cells id, getting the col
+  if (cell.classList.contains('water')){   //if it has water it wasn't checked before
+    instruct.innerHTML = ''; //clears the instruct display
+    if (cell.classList.contains('ship')){ //if there is a ship was placed
+      aHit(cell, cGameBoard[row][col]) //go to the hit logic
+      cGameBoard[row][col] = 'hit' //add hit to the computer game board
     }
-    turn = turn === "p" ? "c" : "p"; //toggles the turn from player to computer and vice versa
+    else{
+      aMiss(cell); //go to the miss logic
+      cGameBoard[row][col] = 'miss' //
+    }
   }
-  cRandomGuesses();
-};
+}
+
+const aHit = (cell, shipName) => {
+  cell.classList.add('hit'); //adds the class hit to change style
+  cell.classList.remove('water'); //removes water class to show the cell has been checked
+  ships.forEach((ship) => {
+    if (shipName === ship.name){
+      player = turn === 'p' ? 'You' : 'The computer' //changes the text based on whose turn it is
+      instruct.innerHTML += `${player} hit a ${shipName}!`  //text to show player
+      ship[turn+'Hit']++
+      scoreSheetUpdate(shipName, ship[turn+'Hit'])
+      shipDestroyed(ship.name, ship[turn+'Hit'])
+    }
+  })
+}
+
+const aMiss = (cell) => {
+  cell.classList.add('miss');
+  cell.classList.remove('water')
+  player = turn === 'p' ? 'You' : 'The computer'
+  instruct.innerHTML += `${player} missed!`
+}
 
 const shipDestroyed = (shipName, hits) => {
   ships.forEach((ship) => {  //looks through our ships array and checks on the object of the ship that was hit
@@ -267,8 +305,8 @@ function init() {
 init(); //calls function when page is opened
 
 //Event Listeners
-cGrid.addEventListener("click", (event) => guessHandler(event, cGameBoard)); //Chat-GPT
-pGrid.addEventListener("click", (event) => guessHandler(event, pGameBoard)); //Chat-GPT
+cGrid.addEventListener("click", (event) => pGuessHandler(event)); //Chat-GPT
+pGrid.addEventListener("click", (event) => (event)); //Chat-GPT
 gameBtn.addEventListener("click", (event) => {
   //ChatGPT
   if (!setUpComplete) startGame(event);
