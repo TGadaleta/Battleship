@@ -24,21 +24,16 @@ const ships = [
 let setUpComplete = false; //tracks whether setup is complete
 let turn = "p"; //the player goes first
 let gameOver = false;
-let cLastHit = null;
-//Functions
-const scoreSheetUpdate = (shipName, numHits) => {
-  if (turn === "p") {
-    //if it's the players turn
-    let shipMarkers = document.querySelectorAll(`.c${shipName}.shipmarker`); //gets all the shipmarkers for the ship that was hit
-    shipMarkers[shipMarkers.length - numHits].classList.add("hit"); //takes the last shipmarker w/out the class hit and adds the class
-  }
-  if (turn === "c") {
-    //if it's the computers turn
-    let shipMarkers = document.querySelectorAll(`.p${shipName}.shipmarker`); //same as above
-    shipMarkers[shipMarkers.length - numHits].classList.add("hit");
-  }
-};
+const directions = [
+  { row: 0, col: 1 }, //right
+  { row: 0, col: -1 }, //left
+  { row: 1, col: 0 }, //down
+  { row: -1, col: 0 }, //up
+];
+let cLastHit = [];
+let nextGuess
 
+//Functions
 const createGameBoard = (gameBoard) => {
   //creates the 2D array that is used to control gameplay
   for (let row = 0; row < gridSize; row++) {
@@ -228,17 +223,53 @@ const pGuessHandler = (event) => {
 };
 
 const cGuesses = () => {
-  if (!gameOver && setUpComplete) { //if setup is complete and the game is not over
+  if (!gameOver && setUpComplete) {
+    //if setup is complete and the game is not over
     turn = "c"; //makes sure turn is set to the computer
-    if (!cLastHit) { //if the last hit by the computer is null
+    if (!cLastHit.length) {
+      //if the array is empty
       let randomIndex = Math.floor(Math.random() * 100); //pick a random number between 0-99
-      let selectedCell = pGrid.childNodes[randomIndex]; //select a cell on the players grid based on the number
-      if (selectedCell.classList.contains("water")) { //if it contains the class water, the cell has not been picked before
-        selectedCell.classList.remove("water"); //the cell has been clicked so we remove water
-        selectedCell.click(); //we click the cell and go to the click event handler
+      let randomCell = pGrid.childNodes[randomIndex]; //select a cell on the players grid based on the number
+      if (randomCell.classList.contains("water")) {
+        //if it contains the class water, the cell has not been picked before
+        randomCell.classList.remove("water"); //the cell has been clicked so we remove water
+        randomCell.click(); //we click the cell and go to the click event handler
       } else cGuesses(); //if the cell doesn't contain the class water, then guess again
+    } else {
+      let index = 0;
+      do{
+      let lastRow = cLastHit[index].row
+      let lastCol = cLastHit[index].col
+      nextGuess = smartGuess(lastRow, lastCol);
+      index++
+      } while(!nextGuess)
+      nextGuess.classList.remove("water");
+      nextGuess.click();
     }
+  }
+};
 
+//TODO empty LastHit when a ship is destroyed
+
+const smartGuess = (lastRow, lastCol) => {
+  for (let i = 0; i<4; i++) {
+    if (
+      lastRow + directions[i].row < gridSize &&
+      lastRow + directions[i].row > -1 &&
+      lastCol + directions[i].col < gridSize &&
+      lastCol + directions[i].col > -1
+    ) {
+      let selectedCell =
+        pGrid.childNodes[
+          Number(
+            String(lastRow + directions[i].row) + String(lastCol + directions[i].col)
+          )
+        ];
+      if (selectedCell.classList.contains("water")) {
+
+        return selectedCell;
+      }
+    }
   }
 };
 
@@ -247,11 +278,9 @@ const cGuessHandler = (event) => {
   let row = Number(cell.id.substring(6, 7)); //using the cells id, getting the row value
   let col = Number(cell.id.substring(8)); //using the cells id, getting the col
   if (cell.classList.contains("ship")) {
-    cLastHit = [row,col]
-    console.log(cLastHit)
+    cLastHit.unshift({ row: row, col: col });
     aHit(cell, pGameBoard[row][col]);
-  }
-  else aMiss(cell);
+  } else aMiss(cell);
 };
 
 const aHit = (cell, shipName) => {
@@ -271,6 +300,19 @@ const aMiss = (cell) => {
   cell.classList.add("miss");
   player = turn === "p" ? "You" : "The computer";
   instruct.innerHTML += `\n${player} missed!`;
+};
+
+const scoreSheetUpdate = (shipName, numHits) => {
+  if (turn === "p") {
+    //if it's the players turn
+    let shipMarkers = document.querySelectorAll(`.c${shipName}.shipmarker`); //gets all the shipmarkers for the ship that was hit
+    shipMarkers[shipMarkers.length - numHits].classList.add("hit"); //takes the last shipmarker w/out the class hit and adds the class
+  }
+  if (turn === "c") {
+    //if it's the computers turn
+    let shipMarkers = document.querySelectorAll(`.p${shipName}.shipmarker`); //same as above
+    shipMarkers[shipMarkers.length - numHits].classList.add("hit");
+  }
 };
 
 const shipDestroyed = (shipName, hits) => {
