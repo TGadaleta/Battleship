@@ -125,12 +125,12 @@ const loadGrid = (grid, gameBoard) => {
 const checkGameOver = () => {
   if (cTotalShips <= 0) {
     //all ships have been destroyed
-    instruct.innerHTML += "\n\nCongratulations!!! You Won!!!";
+    instruct.innerHTML += "\nCongratulations!!! You Won!!!";
     display.innerHTML = "Click Restart Game to Play Again";
     gameOver = true;
   }
   if (pTotalShips <= 0) {
-    instruct.innerHTML += "\n\nBummer, the Computer Won...";
+    instruct.innerHTML += "\nBummer, the Computer Won...";
     display.innerHTML = "Click Restart Game to Play Again";
     gameOver = true;
   }
@@ -142,7 +142,7 @@ const startGame = (event) => {
   loadGrid(pGrid, pGameBoard);
   loadGrid(cGrid, cGameBoard);
   setUpComplete = true; //setup is done once we run these functions
-  display.innerHTML = 'Click Restart Game to Restart the Game'
+  display.innerHTML = "Click Restart Game to Restart the Game";
   instruct.innerHTML =
     "Click on a cell on the Computer's Board to make a guess.";
   event.target.innerHTML = "Restart Game";
@@ -166,8 +166,6 @@ const restartGame = (event) => {
   init();
   startGame(event);
 };
-
-// const guessHandler = (event, gameBoard) => {
 //   let cell = event.target;
 //   let row = Number(cell.id.substring(6, 7)); //collects the row from the cell id
 //   let col = Number(cell.id.substring(8)); //collects the col from the cell id
@@ -221,76 +219,104 @@ const restartGame = (event) => {
 // };
 
 const pGuessHandler = (event) => {
-  let cell = event.target; //grabs the cell that was clicked
-  let row = Number(cell.id.substring(6,7)) //using the cells id, getting the row value
-  let col = Number(cell.id.substring(8)) //using the cells id, getting the col
-  if (cell.classList.contains('water')){   //if it has water it wasn't checked before
-    instruct.innerHTML = ''; //clears the instruct display
-    if (cell.classList.contains('ship')){ //if there is a ship was placed
-      aHit(cell, cGameBoard[row][col]) //go to the hit logic
-      cGameBoard[row][col] = 'hit' //add hit to the computer game board
-    }
-    else{
-      aMiss(cell); //go to the miss logic
-      cGameBoard[row][col] = 'miss' //
+  turn = "p";
+  if (!gameOver && setUpComplete) {
+    let cell = event.target; //grabs the cell that was clicked
+    let row = Number(cell.id.substring(6, 7)); //using the cells id, getting the row value
+    let col = Number(cell.id.substring(8)); //using the cells id, getting the col
+    if (cell.classList.contains("water")) {
+      //if it has water it wasn't checked before
+      cell.classList.remove("water"); //removes water class to show the cell has been checked
+      instruct.innerHTML = ""; //clears the instruct display
+      if (cell.classList.contains("ship")) {
+        //if there is a ship was placed
+        aHit(cell, cGameBoard[row][col]); //go to the hit logic
+        cGameBoard[row][col] = "hit"; //add hit to the computer game board
+      } else {
+        aMiss(cell); //go to the miss logic
+        cGameBoard[row][col] = "miss"; //
+      }
+      cGuesses();
     }
   }
-}
+};
 
 const aHit = (cell, shipName) => {
-  cell.classList.add('hit'); //adds the class hit to change style
-  cell.classList.remove('water'); //removes water class to show the cell has been checked
+  cell.classList.add("hit"); //adds the class hit to change style
   ships.forEach((ship) => {
-    if (shipName === ship.name){
-      player = turn === 'p' ? 'You' : 'The computer' //changes the text based on whose turn it is
-      instruct.innerHTML += `${player} hit a ${shipName}!`  //text to show player
-      ship[turn+'Hit']++
-      scoreSheetUpdate(shipName, ship[turn+'Hit'])
-      shipDestroyed(ship.name, ship[turn+'Hit'])
+    if (shipName === ship.name) {
+      player = turn === "p" ? "You" : "The computer"; //changes the text based on whose turn it is
+      instruct.innerHTML += `\n${player} hit a ${shipName}!`; //text to show player
+      ship[turn + "Hit"]++;
+      scoreSheetUpdate(shipName, ship[turn + "Hit"]);
+      shipDestroyed(ship.name, ship[turn + "Hit"]);
     }
-  })
-}
+  });
+};
 
 const aMiss = (cell) => {
-  cell.classList.add('miss');
-  cell.classList.remove('water')
-  player = turn === 'p' ? 'You' : 'The computer'
-  instruct.innerHTML += `${player} missed!`
-}
+  cell.classList.add("miss");
+  player = turn === "p" ? "You" : "The computer";
+  instruct.innerHTML += `\n${player} missed!`;
+};
 
 const shipDestroyed = (shipName, hits) => {
-  ships.forEach((ship) => {  //looks through our ships array and checks on the object of the ship that was hit
-    if (ship.name === shipName && ship.length === hits) { //if the amount of hits equals the length of the ship, it is sunk
+  ships.forEach((ship) => {
+    //looks through our ships array and checks on the object of the ship that was hit
+    if (ship.name === shipName && ship.length === hits) {
+      //if the amount of hits equals the length of the ship, it is sunk
       if (turn === "p") {
-        instruct.innerHTML += `\n\nYou sunk the computer's ${shipName}!`;
-        cTotalShips -= 1;  //keeps track of the ships for the game over condition
+        instruct.innerHTML += `\nYou sunk the computer's ${shipName}!`;
+        cTotalShips -= 1; //keeps track of the ships for the game over condition
       }
       if (turn === "c") {
-        instruct.innerHTML += `\n\nThe computer sunk your ${shipName}!`;
+        instruct.innerHTML += `\nThe computer sunk your ${shipName}!`;
         pTotalShips -= 1; //keeps track of the ships for the game over condition
       }
     }
   });
   checkGameOver();
 };
+//   if (turn === "c") {
+//     //makes sure it's the computers turn
+//     let randomIndex = Math.floor(Math.random() * 100); //picks a random number between 0-99
+//     let selectedCell = pGrid.childNodes[randomIndex]; //pick a cell using the random Index
+//     if (
+//       !(
+//         selectedCell.classList.contains("miss") || //checks to see if the cell has been clicked before
+//         selectedCell.classList.contains("hit")
+//       )
+//     ) {
+//       selectedCell.click(); //Chat-GPT //clicks the selected cell
+//       turn = turn === "c" ? "c" : "p"; //changes the turn to the player
+//     } else {
+//       cRandomGuesses();
+//     } //if a cell isn't clicked, because it was clicked already, run the function again
+//   }
+// };
 
-const cRandomGuesses = () => {
-  if (turn === "c") {
-    //makes sure it's the computers turn
-    let randomIndex = Math.floor(Math.random() * 100); //picks a random number between 0-99
-    let selectedCell = pGrid.childNodes[randomIndex]; //pick a cell using the random Index
-    if (
-      !(
-        selectedCell.classList.contains("miss") || //checks to see if the cell has been clicked before
-        selectedCell.classList.contains("hit")
-      )
-    ) {
-      selectedCell.click(); //Chat-GPT //clicks the selected cell
-      turn = turn === "c" ? "c" : "p"; //changes the turn to the player
-    } else {
-      cRandomGuesses();
-    } //if a cell isn't clicked, because it was clicked already, run the function again
+const cGuesses = () => {
+  if (!gameOver && setUpComplete) {
+    turn = "c";
+    if (!cLastHit) {
+      let randomIndex = Math.floor(Math.random() * 100);
+      let selectedCell = pGrid.childNodes[randomIndex];
+      if (selectedCell.classList.contains("water")) {
+        //the cell has not been picked before
+        selectedCell.classList.remove("water");
+        selectedCell.click();
+      } else cGuesses();
+    }
+
   }
+};
+
+const cGuessHandler = (event) => {
+  let cell = event.target; //grabs the cell that was clicked
+  let row = Number(cell.id.substring(6, 7)); //using the cells id, getting the row value
+  let col = Number(cell.id.substring(8)); //using the cells id, getting the col
+  if (cell.classList.contains("ship")) aHit(cell, pGameBoard[row][col]);
+  else aMiss(cell);
 };
 
 function init() {
@@ -305,8 +331,8 @@ function init() {
 init(); //calls function when page is opened
 
 //Event Listeners
-cGrid.addEventListener("click", (event) => pGuessHandler(event)); //Chat-GPT
-pGrid.addEventListener("click", (event) => (event)); //Chat-GPT
+cGrid.addEventListener("click", pGuessHandler);
+pGrid.addEventListener("click", cGuessHandler);
 gameBtn.addEventListener("click", (event) => {
   //ChatGPT
   if (!setUpComplete) startGame(event);
