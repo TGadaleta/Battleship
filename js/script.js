@@ -122,20 +122,6 @@ const loadGrid = (grid, gameBoard) => {
   });
 };
 
-const checkGameOver = () => {
-  if (cTotalShips <= 0) {
-    //all ships have been destroyed
-    instruct.innerHTML += "\nCongratulations!!! You Won!!!";
-    display.innerHTML = "Click Restart Game to Play Again";
-    gameOver = true;
-  }
-  if (pTotalShips <= 0) {
-    instruct.innerHTML += "\nBummer, the Computer Won...";
-    display.innerHTML = "Click Restart Game to Play Again";
-    gameOver = true;
-  }
-};
-
 const startGame = (event) => {
   placeShips(cGameBoard);
   placeShips(pGameBoard);
@@ -241,6 +227,33 @@ const pGuessHandler = (event) => {
   }
 };
 
+const cGuesses = () => {
+  if (!gameOver && setUpComplete) { //if setup is complete and the game is not over
+    turn = "c"; //makes sure turn is set to the computer
+    if (!cLastHit) { //if the last hit by the computer is null
+      let randomIndex = Math.floor(Math.random() * 100); //pick a random number between 0-99
+      let selectedCell = pGrid.childNodes[randomIndex]; //select a cell on the players grid based on the number
+      if (selectedCell.classList.contains("water")) { //if it contains the class water, the cell has not been picked before
+        selectedCell.classList.remove("water"); //the cell has been clicked so we remove water
+        selectedCell.click(); //we click the cell and go to the click event handler
+      } else cGuesses(); //if the cell doesn't contain the class water, then guess again
+    }
+
+  }
+};
+
+const cGuessHandler = (event) => {
+  let cell = event.target; //grabs the cell that was clicked
+  let row = Number(cell.id.substring(6, 7)); //using the cells id, getting the row value
+  let col = Number(cell.id.substring(8)); //using the cells id, getting the col
+  if (cell.classList.contains("ship")) {
+    cLastHit = [row,col]
+    console.log(cLastHit)
+    aHit(cell, pGameBoard[row][col]);
+  }
+  else aMiss(cell);
+};
+
 const aHit = (cell, shipName) => {
   cell.classList.add("hit"); //adds the class hit to change style
   ships.forEach((ship) => {
@@ -277,46 +290,19 @@ const shipDestroyed = (shipName, hits) => {
   });
   checkGameOver();
 };
-//   if (turn === "c") {
-//     //makes sure it's the computers turn
-//     let randomIndex = Math.floor(Math.random() * 100); //picks a random number between 0-99
-//     let selectedCell = pGrid.childNodes[randomIndex]; //pick a cell using the random Index
-//     if (
-//       !(
-//         selectedCell.classList.contains("miss") || //checks to see if the cell has been clicked before
-//         selectedCell.classList.contains("hit")
-//       )
-//     ) {
-//       selectedCell.click(); //Chat-GPT //clicks the selected cell
-//       turn = turn === "c" ? "c" : "p"; //changes the turn to the player
-//     } else {
-//       cRandomGuesses();
-//     } //if a cell isn't clicked, because it was clicked already, run the function again
-//   }
-// };
 
-const cGuesses = () => {
-  if (!gameOver && setUpComplete) {
-    turn = "c";
-    if (!cLastHit) {
-      let randomIndex = Math.floor(Math.random() * 100);
-      let selectedCell = pGrid.childNodes[randomIndex];
-      if (selectedCell.classList.contains("water")) {
-        //the cell has not been picked before
-        selectedCell.classList.remove("water");
-        selectedCell.click();
-      } else cGuesses();
-    }
-
+const checkGameOver = () => {
+  if (cTotalShips <= 0) {
+    //all ships have been destroyed
+    instruct.innerHTML += "\nCongratulations!!! You Won!!!";
+    display.innerHTML = "Click Restart Game to Play Again";
+    gameOver = true;
   }
-};
-
-const cGuessHandler = (event) => {
-  let cell = event.target; //grabs the cell that was clicked
-  let row = Number(cell.id.substring(6, 7)); //using the cells id, getting the row value
-  let col = Number(cell.id.substring(8)); //using the cells id, getting the col
-  if (cell.classList.contains("ship")) aHit(cell, pGameBoard[row][col]);
-  else aMiss(cell);
+  if (pTotalShips <= 0) {
+    instruct.innerHTML += "\nBummer, the Computer Won...";
+    display.innerHTML = "Click Restart Game to Play Again";
+    gameOver = true;
+  }
 };
 
 function init() {
