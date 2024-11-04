@@ -249,8 +249,6 @@ const cGuesses = () => {
   }
 };
 
-//TODO empty LastHit when a ship is destroyed
-
 const smartGuess = (lastRow, lastCol) => {
   for (let i = 0; i<4; i++) {
     if (
@@ -330,7 +328,6 @@ const shipDestroyed = (shipName, hits) => {
         for (let i = 0; i < hits; i++){
           cLastHit.shift();
         }
-        console.log(cLastHit);
       }
     }
   });
