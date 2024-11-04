@@ -327,6 +327,10 @@ const shipDestroyed = (shipName, hits) => {
       if (turn === "c") {
         instruct.innerHTML += `\nThe computer sunk your ${shipName}!`;
         pTotalShips -= 1; //keeps track of the ships for the game over condition
+        for (let i = 0; i < hits; i++){
+          cLastHit.shift();
+        }
+        console.log(cLastHit);
       }
     }
   });
