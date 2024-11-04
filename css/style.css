@@ -88,3 +88,9 @@ button {
 .pGrid.hit{
     background-color: red;
 }
+#pGrid-block{
+    position: absolute;
+    z-index: 1;
+    width: 322px;
+    height: 322px;
+}
