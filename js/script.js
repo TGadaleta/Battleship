@@ -4,7 +4,6 @@ const pGrid = document.querySelector("#pGrid");
 const cGrid = document.querySelector("#cGrid");
 const gameBtn = document.querySelector("#gameButton");
 const instruct = document.querySelector("#instructions");
-const cCarrier = document.querySelectorAll(".cCarrier");
 
 //Variables
 const gridSize = 10; //how man cell rows and cols on each board
@@ -30,8 +29,8 @@ const directions = [
   { row: 1, col: 0 }, //down
   { row: -1, col: 0 }, //up
 ];
-let cLastHit = [];
-let nextGuess
+let cLastHit = []; //array used for smart computer guesses
+let nextGuess; //variable used for smart computer guesses
 
 //Functions
 const createGameBoard = (gameBoard) => {
@@ -118,9 +117,9 @@ const loadGrid = (grid, gameBoard) => {
 };
 
 const startGame = (event) => {
-  placeShips(cGameBoard);
+  placeShips(cGameBoard); //places ships on the game board
   placeShips(pGameBoard);
-  loadGrid(pGrid, pGameBoard);
+  loadGrid(pGrid, pGameBoard); //places ships on the game grid
   loadGrid(cGrid, cGameBoard);
   setUpComplete = true; //setup is done once we run these functions
   display.innerHTML = "Click Restart Game to Restart the Game";
@@ -144,60 +143,10 @@ const restartGame = (event) => {
   pTotalShips = 5;
   cTotalShips = 5;
   gameOver = false;
+  cLastHit.length = 0;
   init();
   startGame(event);
 };
-//   let cell = event.target;
-//   let row = Number(cell.id.substring(6, 7)); //collects the row from the cell id
-//   let col = Number(cell.id.substring(8)); //collects the col from the cell id
-//   if (
-//     setUpComplete &&
-//     !cell.classList.contains("hit") &&
-//     !cell.classList.contains("miss") &&
-//     !gameOver
-//   ) {
-//     //checks if setup is done and the cell has not been clicked before and the game over conditions have not been met
-//     if (cell.classList.contains("ship")) {
-//       //checks if the classlist contains ship
-//       cell.classList.add("hit"); //adds to classlist
-//       cell.classList.remove('water');
-//       ships.forEach((ship) => {
-//         //checks each ship on the ships array
-//         if (ship.name === gameBoard[row][col]) {
-//           //find the object (ship) with the same value as the gameBoard array
-//           if (turn === "p") {
-//             //if it is the player's turn
-//             ship.pHit += 1; //increase the number of hits for this ship for the player
-//             instruct.innerHTML = `You hit the computer's ${gameBoard[row][col]}!`;
-//             gameBoard[row][col] = 'hit'
-//             scoreSheetUpdate(ship.name, ship.pHit); //update the scoresheet
-//             shipDestroyed(ship.name, ship.pHit); //see if the ship is destroyed
-//           }
-//           if (turn === "c") {
-//             //if it is the computer's turn
-//             ship.cHit += 1; //increase the number of hits for this ship for the computer
-//             instruct.innerHTML += `\n\nThe computer hit your ${gameBoard[row][col]}!`;
-//             gameBoard[row][col] = 'hit'
-//             scoreSheetUpdate(ship.name, ship.cHit); //update the scoresheet
-//             shipDestroyed(ship.name, ship.cHit); //see if the ship is destroyed
-//           }
-//         }
-//       });
-//     } else {
-//       event.target.classList.add("miss"); //adds a miss to the grid and to the respectife players game board
-//       if (turn === "p") {
-//         cGameBoard[row][col] = 'miss';
-//         instruct.innerHTML = `You missed.`;
-//       }
-//       if (turn === "c") {
-//         pGameBoard[row][col] = 'miss';
-//         instruct.innerHTML += `\n\nThe computer missed.`;
-//       }
-//     }
-//     turn = turn === "p" ? "c" : "p"; //toggles the turn from player to computer and vice versa
-//   }
-//   cRandomGuesses();
-// };
 
 const pGuessHandler = (event) => {
   turn = "p";
@@ -217,7 +166,7 @@ const pGuessHandler = (event) => {
         aMiss(cell); //go to the miss logic
         cGameBoard[row][col] = "miss"; //
       }
-      cGuesses();
+      cGuesses(); //immediately call the computer guess function
     }
   }
 };
@@ -237,12 +186,13 @@ const cGuesses = () => {
       } else cGuesses(); //if the cell doesn't contain the class water, then guess again
     } else {
       let index = 0;
-      do{
-      let lastRow = cLastHit[index].row
-      let lastCol = cLastHit[index].col
-      nextGuess = smartGuess(lastRow, lastCol);
-      index++
-      } while(!nextGuess)
+      do {
+        //logic to check for the next guess. will continue to call smartGuess until a valid cell is selected
+        let lastRow = cLastHit[index].row;
+        let lastCol = cLastHit[index].col;
+        nextGuess = smartGuess(lastRow, lastCol);
+        index++;
+      } while (!nextGuess);
       nextGuess.classList.remove("water");
       nextGuess.click();
     }
@@ -250,21 +200,24 @@ const cGuesses = () => {
 };
 
 const smartGuess = (lastRow, lastCol) => {
-  for (let i = 0; i<4; i++) {
+  //logic that is used by the computer to make a smarter guess after a hit
+  for (let i = 0; i < 4; i++) {
     if (
+      //logic that makes sure the next guess is on the grid
       lastRow + directions[i].row < gridSize &&
       lastRow + directions[i].row > -1 &&
       lastCol + directions[i].col < gridSize &&
       lastCol + directions[i].col > -1
     ) {
-      let selectedCell =
+      let selectedCell = //grabs the cell using the row and col coordinates from the gameboard translated to an index for the grid
         pGrid.childNodes[
           Number(
-            String(lastRow + directions[i].row) + String(lastCol + directions[i].col)
+            String(lastRow + directions[i].row) +
+              String(lastCol + directions[i].col)
           )
         ];
       if (selectedCell.classList.contains("water")) {
-
+        //makes sure the cell has not been clicked before
         return selectedCell;
       }
     }
@@ -295,6 +248,7 @@ const aHit = (cell, shipName) => {
 };
 
 const aMiss = (cell) => {
+  //logic for handling a miss
   cell.classList.add("miss");
   player = turn === "p" ? "You" : "The computer";
   instruct.innerHTML += `\n${player} missed!`;
@@ -325,7 +279,7 @@ const shipDestroyed = (shipName, hits) => {
       if (turn === "c") {
         instruct.innerHTML += `\nThe computer sunk your ${shipName}!`;
         pTotalShips -= 1; //keeps track of the ships for the game over condition
-        for (let i = 0; i < hits; i++){
+        for (let i = 0; i < hits; i++) {
           cLastHit.shift();
         }
       }
