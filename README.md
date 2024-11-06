@@ -1,7 +1,7 @@
 # Tony G's Battleship!!!
 
 ## Description
-This is a custom built, digital version of the board game Battleship. In this version, the user player and the computer player place five ships of varying lengths randomly in a 10x10 grid and then take turns trying to guess the locations of the ships. The computer's logic starts by guessing randomly, until it makes a hit. Then its logic keeps the computer guessing around the hit until the ship is destroyed.  I chose this game as I wanted a challenge for my first project.
+This is a custom-built, digital version of the board game Battleship. In this version, both the user and the computer player place five ships of varying lengths randomly on a 10x10 grid. The players then take turns trying to guess the locations of each other's ships. The computer begins by guessing randomly until it makes a hit, after which it guesses strategically around the hit until the ship is destroyed. I chose this game as a challenge for my first project.
 
 #### URL:  [Game deployed on Netlify](https://tony-gadaleta-battleship.netlify.app/)
 
@@ -17,7 +17,7 @@ This is a custom built, digital version of the board game Battleship. In this ve
 
 ## Instructions
 
-To start a game, click the Start Game button in the middle of the screen. This will randomly place ships on your board and the computer's board. You can see the ships placed on your board while the ships placed on the computer's board are hidden. Then, take your turn by clicking on any cell on the computer's board. This will guess that cell, which will then show if there is a ship there (a hit in red) or if there isn't a ship there (a miss in gray). A hit will also register on the scoresheet below each board. The computer will automatically take a guess. Results for each guess will be displayed in the instructions box in the middle of the screen. Continue to guess cells until you have found all the computer's ships or until the computer has found all of yours. You can also restart the game at any time by clicking the Restart Game button.
+To start a game, click the "Start Game" button in the middle of the screen. This will randomly place ships on both your board and the computer's board. You can see the ships on your board, while the computer’s ships remain hidden. Take your turn by clicking any cell on the computer’s board to guess that cell. Hits are marked in red, and misses are marked in gray. A hit will also register on the scoresheet below each board. The computer will automatically take a guess in response, and results for each guess are displayed in the instructions box in the middle of the screen. Continue to guess cells until you have located all the computer's ships, or until the computer has located all of yours. You can restart the game anytime by clicking the "Restart Game" button.
 
 ## MVPs and Stretch Goals
 #### MVPs
